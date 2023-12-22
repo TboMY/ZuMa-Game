@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    position: absolute;
+    /*min-width: 1400px;*/
+    /*min-height: 700px;*/
+}
+
+#bc-canvas {
+    z-index: 1;
+}
+
+#main-canvas {
+    z-index: 10;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas自旋转</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="rotationCanvas" width="400" height="400"></canvas>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var canvas = document.getElementById("rotationCanvas");
+    var context = canvas.getContext("2d");
+
+    // 图片路径
+    var imagePath = "../img/end.png";
+    var image = new Image();
+
+    // 图片加载完成后执行
+    image.onload = function () {
+      // 初始角度
+      var angle = 0;
+
+      // 监听鼠标移动事件
+      canvas.addEventListener("mousemove", function (event) {
+        // 清空画布
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 计算鼠标位置相对于Canvas的坐标
+        var mouseX = event.clientX - canvas.getBoundingClientRect().left;
+        var mouseY = event.clientY - canvas.getBoundingClientRect().top;
+
+        // 计算旋转角度（可以根据实际需求进行调整）
+        angle = Math.atan2(mouseY - canvas.height / 2, mouseX - canvas.width / 2);
+
+        // 绘制图像并应用旋转变换
+        context.save();
+        context.translate(canvas.width / 2, canvas.height / 2);
+        context.rotate(angle);
+        context.drawImage(image, -image.width / 2, -image.height / 2);
+        context.restore();
+      });
+
+      // 设置图像路径，触发加载
+      image.src = imagePath;
+    };
+  });
+</script>
+</body>
+</html>
