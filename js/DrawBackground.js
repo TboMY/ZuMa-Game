@@ -77,7 +77,7 @@ async function drawImgAndBindEvent () {
       const y = e.y
       const diffX = x - 920
       const diffY = y - 380
-      setAngle(Math.atan2(diffY, diffX) - Math.PI / 2)
+      setAngle(Math.atan2(diffY, diffX))
       // 画图
       ctx.save()
       ctx.clearRect(810, 270, 220, 220)

@@ -27,7 +27,7 @@ export const circleTrackArr = [
   },
 ]
 // 蛤蟆旋转的角度
-let rotateAngle = -Math.PI / 2
+let rotateAngle = 0
 
 // 全屏canvas,创建ctx然后返回
 export function createCtx (id) {

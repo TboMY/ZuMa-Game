@@ -14,11 +14,17 @@ let isFail = false
 // Δt
 let dt = 0.015
 // 球的所有颜色数组
-const colorArr = ['skyblue', 'yellow', 'green','red']
+const colorArr = ['skyblue', 'yellow', 'green', 'red']
 // 生成所有球
 const circleArr = createInitCircleArr()
-
-
+// 画在蛤蟆嘴里的圆
+const shotCircle = drawCircleInMouse()
+// 辅助射击球的对象
+const shootingCircleHelpObj = {
+  isShoot: false,
+  cos: 0,
+  sin: 0
+}
 
 // 渲染
 function render () {
@@ -27,15 +33,15 @@ function render () {
     return
   }
   // 清除canvas
-  // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
+  drawCircleInMouse()
   circleArr.forEach(circle => {
-    // update(circle)
+    update(circle)
   })
 
   requestAnimationFrame(render)
 }
-
 
 // 计算所有圆弧轨道长度,
 function getCircleLength () {
@@ -113,20 +119,46 @@ function update (circle) {
     circle.t += dt
   }
   // 重绘圆
-  // drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true,circle.color )
+  drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true, circle.color)
 }
 
 render()
 
+// 点击事件,发射球
+document.getElementById('main-canvas').addEventListener('click', () => {
+  shootingCircle()
+})
 
-const canvas = document.getElementById('main-canvas')
-canvas.addEventListener('mousemove', e => {
-  // 画图
+function shootingCircle () {
+  ctx.save()
+  if (!shootingCircleHelpObj.isShoot) {
+    console.log(getAngle())
+    shootingCircleHelpObj.cos = Math.cos(getAngle())
+    shootingCircleHelpObj.sin = Math.sin(getAngle())
+    shotCircle.x = 920 + 70 * shootingCircleHelpObj.cos
+    shotCircle.y = 380 + 70 * shootingCircleHelpObj.sin
+    shootingCircleHelpObj.isShoot = true
+  }
+
+  // drawFillCircle(ctx, 70, 0, 40, 0, Math.PI * 2, true, 'red')
+  drawFillCircle(ctx, shotCircle.x, shotCircle.y, 40, 0, Math.PI * 2, true, 'red')
+  shotCircle.x += shootingCircleHelpObj.cos * 3
+  shotCircle.y += shootingCircleHelpObj.sin * 3
+  ctx.restore()
+  requestAnimationFrame(shootingCircle)
+}
+
+// 画最开始在蛤蟆嘴里的圆
+function drawCircleInMouse () {
   ctx.save()
   ctx.translate(920, 380)
   ctx.rotate(getAngle())
-  drawFillCircle( ctx, 0, 70, 40, 0, Math.PI * 2, true, 'red')
+  const shootCircle = new CircleClass(ctx, 70, 0, 'red')
+  // drawFillCircle(ctx, 70, 0, 40, 0, Math.PI * 2, true, 'red')
   ctx.restore()
-})
+  return shootCircle
+}
+
+
 
 
