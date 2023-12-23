@@ -19,7 +19,7 @@ function drawRect (x, y, width, height, color) {
 // 画所有轨迹
 function drawAllTrack () {
   // 画初始直线
-  drawLine(initLine.x1, initLine.y1, initLine.x2, initLine.y2, 'white', 80)
+  drawLine(initLine.x1, initLine.y1, initLine.x2, initLine.y2, '#8d067c80', 80)
   // 画所有圆形轨道
   circleTrackArr.forEach(circle => {
     const { x, y, radius, loop } = circle
@@ -27,7 +27,7 @@ function drawAllTrack () {
     if (!loop) {
       direction = [0, Math.PI]
     }
-    drawStrokeCircle(x, y, radius, ...direction, true, 'white', 80)
+    drawStrokeCircle(x, y, radius, ...direction, true, '#8d067c80', 80)
   })
 }
 

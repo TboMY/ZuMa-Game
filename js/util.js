@@ -48,18 +48,8 @@ export class CircleClass {
     this.y=y
     this.angle= Math.PI
     this.color= color
-    drawFillCircle(ctx, x, y, 40, 0, Math.PI * 2, true, color)
+    // drawFillCircle(ctx, x, y, 40, 0, Math.PI * 2, true, color)
   }
-}
-
-// 填充圆的函数,带全参数
-export function drawFillCircle (ctx, x, y, radius, startAngle, endAngle, anticlockwise, color) {
-  ctx.save()
-  ctx.fillStyle = color
-  ctx.beginPath()
-  ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
-  ctx.fill()
-  ctx.restore()
 }
 
 // 改变角度
