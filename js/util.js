@@ -43,11 +43,12 @@ export function createCtx (id) {
 export class CircleClass {
   t = 0
   index = 0
+
   constructor (ctx, x, y, color) {
-    this.x=x
-    this.y=y
-    this.angle= Math.PI
-    this.color= color
+    this.x = x
+    this.y = y
+    this.angle = Math.PI
+    this.color = color
     // drawFillCircle(ctx, x, y, 40, 0, Math.PI * 2, true, color)
   }
 }
@@ -61,3 +62,9 @@ export function setAngle (angle) {
 export function getAngle () {
   return rotateAngle
 }
+
+export const request = axios.create({
+  headers: {
+    'Access-Control-Allow-Origin': 'http://localhost:8080'
+  }
+})

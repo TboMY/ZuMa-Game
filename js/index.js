@@ -1,4 +1,4 @@
-import { initLine, circleTrackArr, CircleClass, createCtx, getAngle } from './util.js'
+import { initLine, circleTrackArr, request, CircleClass, createCtx, getAngle } from './util.js'
 
 // 创建ctx对象
 const ctx = createCtx('main-canvas')
@@ -14,8 +14,7 @@ let isFail = false
 // Δt
 let dt = 0.015
 // 球的所有颜色数组
-// const colorArr = ['skyblue', 'yellow', 'green', 'red']
-const colorArr =['#00c0ff', '#fff900', '#00ff00', '#ff0000']
+const colorArr = ['#00c0ff', '#fff900', '#00ff00', '#ff0000']
 
 // 生成所有球
 const circleArr = createInitCircleArr()
@@ -34,11 +33,22 @@ function render () {
   if (!shotCircle.isShoot) {
     drawCircleInMouse(shotCircle)
   }
-  circleArr.forEach(circle => {
+  circleArr.forEach((circle, i) => {
+    if (isHit(circle, shotCircle)) {
+      // 在蛤蟆嘴上生成新的球
+      shotCircle = createCircleObj(70, 0, colorArr[Math.floor(Math.random() * 4)])
+      // 删除该轨道上的球
+      circleArr.splice(i, 1)
+      console.log('碰撞')
+      return
+    }
     updateCircleMovingOnTrack(circle)
   })
   requestAnimationFrame(render)
 }
+
+//=====================================================
+// 轨道上的动画
 
 // 计算所有圆弧轨道长度,
 function getCircleLength () {
@@ -70,6 +80,9 @@ function createCircleObj (x, y, color) {
 // 点击事件,发射球
 document.getElementById('main-canvas').addEventListener('click', () => {
   shootingCircle()
+  // request.get('http://localhost:8080/user').then(res => {
+  //   console.log(res)
+  // })
 })
 
 // 发射球
@@ -78,11 +91,6 @@ function shootingCircle () {
   if (shotCircle.isShoot) {
     return
   }
-
-  // 1s后再次生成一个球
-  setTimeout(() => {
-    shotCircle = createCircleObj(70, 0, colorArr[Math.floor(Math.random() * 4)])
-  }, 800)
 
   shotCircle.cos = Math.cos(getAngle())
   shotCircle.sin = Math.sin(getAngle())
@@ -99,6 +107,12 @@ function updateShootingCircle () {
   if (!shotCircle.isShoot) {
     return
   }
+  // 判断球是否出界
+  if (shotCircle.x < 0 || shotCircle.x > ctx.canvas.width || shotCircle.y < 0 || shotCircle.y > ctx.canvas.height) {
+    shotCircle = new CircleClass(ctx, 70, 0, colorArr[Math.floor(Math.random() * 4)])
+    return
+  }
+
   drawFillCircle(ctx, shotCircle.x, shotCircle.y, 40, 0, Math.PI * 2, true, shotCircle.color)
   shotCircle.x += shotCircle.cos * 6
   shotCircle.y += shotCircle.sin * 6
@@ -117,8 +131,8 @@ function drawCircleInMouse (circle) {
 // 填充圆的函数,带全参数
 function drawFillCircle (ctx, x, y, radius, startAngle, endAngle, anticlockwise, color) {
   ctx.save()
-  const gradient = ctx.createRadialGradient(x-15, y-15, 5, x, y, radius)
-  // gradient.addColorStop(0, `${color}30`)
+  // 创建渐变色
+  const gradient = ctx.createRadialGradient(x - 15, y - 15, 5, x, y, radius)
   gradient.addColorStop(0, `#ffffff80`)
   gradient.addColorStop(0.4, `${color}90`)
   gradient.addColorStop(1, color)
@@ -126,15 +140,22 @@ function drawFillCircle (ctx, x, y, radius, startAngle, endAngle, anticlockwise,
   ctx.beginPath()
   ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
   ctx.fill()
-
-  // ctx.fillStyle = color
-  // ctx.beginPath()
-  // ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
-  // ctx.fill()
   ctx.restore()
 }
 
 // =====================================================
+
+// 碰撞判断
+function isHit (trackCircle, shotCircle) {
+  // 先判断该轨道上的球,是否在画布之外
+  if (trackCircle.y < 0) {
+    return false
+  }
+  // 判断是否碰撞
+  const diff = Math.sqrt(Math.pow(trackCircle.x - shotCircle.x, 2) + Math.pow(trackCircle.y - shotCircle.y, 2))
+  return diff <= 80 && trackCircle.color === shotCircle.color
+
+}
 
 // 在轨道内运动的球的动画
 function updateCircleMovingOnTrack (circle) {
@@ -191,5 +212,6 @@ function updateCircleMovingOnTrack (circle) {
 }
 
 render()
+
 
 
