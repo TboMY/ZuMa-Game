@@ -1,4 +1,4 @@
-import { initLine, circleTrackArr, request, CircleClass, createCtx, getAngle } from './util.js'
+import { initLine, circleTrackArr, CircleClass, createCtx, getAngle } from './util.js'
 
 // 创建ctx对象
 const ctx = createCtx('main-canvas')
@@ -37,9 +37,12 @@ function render () {
     if (isHit(circle, shotCircle)) {
       // 在蛤蟆嘴上生成新的球
       shotCircle = createCircleObj(70, 0, colorArr[Math.floor(Math.random() * 4)])
-      // 删除该轨道上的球
-      circleArr.splice(i, 1)
-      console.log('碰撞')
+      request({ circle, shotCircle }).then(resp => {
+        console.log(resp)
+      })
+      // // 删除该轨道上的球
+      // circleArr.splice(i, 1)
+      // console.log('碰撞')
       return
     }
     updateCircleMovingOnTrack(circle)
@@ -80,9 +83,6 @@ function createCircleObj (x, y, color) {
 // 点击事件,发射球
 document.getElementById('main-canvas').addEventListener('click', () => {
   shootingCircle()
-  // request.get('http://localhost:8080/user').then(res => {
-  //   console.log(res)
-  // })
 })
 
 // 发射球
@@ -152,8 +152,9 @@ function isHit (trackCircle, shotCircle) {
     return false
   }
   // 判断是否碰撞
-  const diff = Math.sqrt(Math.pow(trackCircle.x - shotCircle.x, 2) + Math.pow(trackCircle.y - shotCircle.y, 2))
-  return diff <= 80 && trackCircle.color === shotCircle.color
+  return Math.sqrt(Math.pow(trackCircle.x - shotCircle.x, 2) + Math.pow(trackCircle.y - shotCircle.y, 2)) <= 80
+
+  // return diff <= 80 && trackCircle.color === shotCircle.color
 
 }
 
@@ -213,5 +214,8 @@ function updateCircleMovingOnTrack (circle) {
 
 render()
 
-
+// 发送请求
+async function request (data) {
+  return await axios.post('http://localhost:8080/hit', data)
+}
 

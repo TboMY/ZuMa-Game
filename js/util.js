@@ -62,9 +62,3 @@ export function setAngle (angle) {
 export function getAngle () {
   return rotateAngle
 }
-
-export const request = axios.create({
-  headers: {
-    'Access-Control-Allow-Origin': 'http://localhost:8080'
-  }
-})
