@@ -1,4 +1,4 @@
-import { createCtx, getAngle } from './util.js'
+import { createCtx, getAngle } from './util/util.js'
 import { getNewShotCircleAPI, hitAPI, initCircleArrAPI, initTracksAPI } from './api'
 
 // 直线轨道
