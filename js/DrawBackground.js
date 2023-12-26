@@ -1,9 +1,30 @@
-import { initLine, circleTrackArr, getAngle, setAngle, createCtx } from './util.js'
+import { getAngle, setAngle, createCtx } from './util.js'
+import { initTracksAPI } from './api'
 
+// 直线轨道
+let initLine
+// 所有圆形轨道的数组
+let circleTrackArr = []
 // 让canvas填充全屏,并创建ctx,作为全局变量
-const ctx = createCtx('bc-canvas')
+let ctx
+
 // 初始化
 init()
+// 初始化函数
+async function init () {
+  // 获取所有轨道数据
+  const data = (await initTracksAPI()).data
+  initLine = data[0]
+  circleTrackArr = data[1]
+
+  ctx = createCtx('bc-canvas')
+  // 画一个灰色全屏矩形
+  drawRect(0, 0, ctx.canvas.width, ctx.canvas.height, 'gray')
+  // 画所有轨道
+  drawAllTrack()
+  // 画蛤蟆和终点图,并绑定事件
+  drawImgAndBindEvent()
+}
 
 // =====================================================
 // 填充矩形的函数
@@ -19,7 +40,7 @@ function drawRect (x, y, width, height, color) {
 // 画所有轨迹
 function drawAllTrack () {
   // 画初始直线
-  drawLine(initLine.x1, initLine.y1, initLine.x2, initLine.y2, '#8d067c80', 80)
+  drawLine(initLine.x1, initLine.y1, initLine.x2, initLine.y2, 'white', 80)
   // 画所有圆形轨道
   circleTrackArr.forEach(circle => {
     const { x, y, radius, loop } = circle
@@ -110,15 +131,7 @@ function loadImg (src) {
 }
 
 // =====================================================
-// 初始化函数
-function init () {
-  // 画一个灰色全屏矩形
-  drawRect(0, 0, ctx.canvas.width, ctx.canvas.height, 'gray')
-  // 画所有轨道
-  drawAllTrack()
-  // 画蛤蟆和终点图,并绑定事件
-  drawImgAndBindEvent().then(r => console.log('promise的打印', r))
-}
+
 
 
 
