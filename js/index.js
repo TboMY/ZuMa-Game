@@ -10,6 +10,7 @@ import {
 } from './api'
 import { handleRotateImg, bindImgRotateEvent } from './DrawBackground.js'
 import { start } from './Init.js'
+import { showLevel } from './OtherFeatures.js'
 
 let userName
 let initLength
@@ -52,6 +53,7 @@ export async function init (name) {
     alert('恭喜你已经全部通关！')
     return
   }
+  showLevel(leveId)
   // 获取所有轨道数据
   const trackData = (await initTracksAPI()).data
   initLine = trackData[0]

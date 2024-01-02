@@ -369,3 +369,25 @@ canvas {
     box-shadow: 0 0 20px black;
 }
 
+/* =================== 右上角显示第几关  =======================*/
+.show-level {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    width: 300px;
+    line-height: 100px;
+    text-align: center;
+    font-size: 80px;
+    font-weight: bold;
+    z-index: 999;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-size: 100% 100%;
+    background-image: url("../img/text-bg.jpg");
+}
+
+.show-level .level {
+    color: #ff0000;
+}
+

@@ -6,7 +6,7 @@ export function bindLeftButton (name) {
   document.querySelector('.show-info').onclick = function (e) {
     const target = e.target
     if (target.tagName !== 'BUTTON') return
-    if (target.className === 'achievement') {
+    if (target.className.includes('achievement')) {
       showAchievement(name)
     } else {
       showRankingList(1, 0, true)
@@ -135,4 +135,9 @@ export async function bindPluginClickEvent (name) {
 function updateSpan (moneySpanElement, commonSpanElement, moneyPlugin, commonPlugin) {
   moneySpanElement.innerText = moneyPlugin.toString()
   commonSpanElement.innerText = commonPlugin.toString()
+}
+
+export function showLevel(level){
+  document.querySelector('.show-level').style.display = 'block'
+  document.querySelector('.show-level .level').innerText = level.toString()
 }
