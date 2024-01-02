@@ -9,7 +9,8 @@ html, body {
 }
 
 canvas {
-    display: block;
+    /*display: block;*/
+    display: none;
     margin: 0 auto;
     position: absolute;
     /*min-width: 1400px;*/
@@ -22,5 +23,342 @@ canvas {
 
 #main-canvas {
     z-index: 10;
+}
+
+/*==================================    */
+
+.cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.cover-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 30px;
+    text-align: center;
+    font-size: 30px;
+    color: #000;
+}
+
+.game-start {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url("../img/game-start.png");
+}
+
+.game-start .cover-form {
+    box-sizing: border-box;
+    padding-top: 100px;
+    word-spacing: 50px;
+}
+
+.game-start input {
+    margin: 0 auto;
+    display: block;
+    width: 500px;
+    height: 60px;
+    border-radius: 10px;
+    border: 5px solid skyblue;
+    outline: none;
+    font-size: 40px;
+}
+
+.game-start input:focus {
+    border: 5px solid black;
+}
+
+.game-start button {
+    width: 200px;
+    height: 60px;
+    background-color: deepskyblue;
+    border: 5px solid skyblue;
+    border-radius: 20px;
+    font-size: 30px;
+    margin-top: 50px;
+    color: black;
+    outline: none;
+}
+
+.game-start button:hover {
+    cursor: pointer;
+    color: white;
+    border: 5px solid white;
+    background-color: palegreen;
+}
+
+
+.game-over {
+    display: none;
+}
+
+.game-over .cover-form {
+    box-sizing: border-box;
+    padding: 100px 50px
+}
+
+.fail {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.fail > button, .success > button {
+    margin-top: 30px;
+    width: 200px;
+    height: 60px;
+    border: none;
+    box-shadow: 0 0 10px 5px #000;
+    border-radius: 30px;
+    font-size: 30px;
+    background-color: black;
+}
+
+.fail > button:hover {
+    cursor: pointer;
+    color: white;
+    background-color: red;
+}
+
+
+.success {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.success > button {
+    color: #1fff00;
+    background-color: #000;
+}
+
+.success > button:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #1fff00;
+}
+
+.color-FF0000FF {
+    color: #ff0000;
+}
+
+.color-1EFF00FF {
+    color: #1fff00;
+}
+
+/*  ============================================================== */
+.show-info {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 250px;
+    height: 600px;
+    transform: translate(0, -50%);
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+    letter-spacing: 10px;
+}
+
+.show-info > button {
+    width: 200px;
+    height: 200px;
+    box-shadow: 0 0 10px 10px white;
+    background-color: skyblue;
+    background-image: linear-gradient(to right, #00ffff, #06475e);
+    border-radius: 50%;
+    border: none;
+    font-size: 70px;
+    font-family: '华文彩云';
+    color: black;
+}
+
+.achievement:hover {
+    cursor: pointer;
+    background-image: linear-gradient(to left, palegreen, #009f00);
+    color: white;
+}
+
+.ranking:hover {
+    cursor: pointer;
+    background-image: linear-gradient(to left, palegreen, #009f00);
+    color: white;
+}
+
+/*  ==============================================   */
+.show-achievement {
+    display: none;
+}
+
+.show-achievement table {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 600px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    font-size: 40px;
+    background-color: white;
+}
+
+.show-achievement th, .show-achievement td {
+    border: 1px solid #000;
+    padding: 20px;
+}
+
+.show-achievement button {
+    width: 300px;
+    height: 60px;
+    position: absolute;
+    font-size: 30px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid #000;
+    background-color: #1fb1f8;
+    color: black;
+    left: 50%;
+    bottom: 10%;
+    transform: translateX(-50%);
+}
+
+.show-achievement button:hover {
+    background-color: #26f606;
+    border: solid 1px white;
+    color: #fff;
+}
+
+/*  =============================== */
+
+.show-ranking {
+    display: none;
+}
+
+.show-ranking > div {
+    width: 900px;
+    height: 850px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.show-ranking table {
+    width: 100%;
+    background-color: #f0f8ff;
+    min-width: 600px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+}
+
+.show-ranking table tr {
+    height: 65px;
+    letter-spacing: 5px;
+    font-size: 30px;
+}
+
+.show-ranking td, .show-ranking th {
+    border: 1px solid #000;
+    padding: 5px 10px;
+}
+
+.show-ranking thead tr{
+    background-color: pink;
+}
+
+.show-ranking tbody tr:nth-of-type(even) {
+    background-color: #ffffff;
+}
+
+.show-ranking tbody tr:hover {
+    background-color: #ffa100;
+}
+
+.show-ranking button {
+    width: 150px;
+    height: 80px;
+    outline: none;
+    border: solid 5px skyblue;
+    border-radius: 20px;
+    font-size: 30px;
+    background-color: skyblue;
+}
+
+.show-ranking button:hover {
+    background-color: palegreen;
+    color: white;
+    border: solid 5px white;
+}
+
+.show-ranking .footer {
+    margin-top: 20px;
+    padding: 0 20px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+}
+
+.show-ranking .footer button:first-child {
+    margin-right: 40px;
+}
+
+.show-ranking .footer button:last-child {
+    margin-left: auto;
+}
+
+/*  ===================== 道具 ==================*/
+.plugin{
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 400px;
+    height: 800px;
+    transform: translateY(-50%);
+    z-index: 999;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-family: '华文彩云';
+    line-height: 200px;
+    font-size: 50px;
+}
+
+.plugin img{
+    width: 200px;
+    height: 200px;
+    transition:0.4s linear all;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+.plugin span:nth-of-type(2){
+    color: #fff;
+    font-size: 100px;
+    vertical-align: middle;
+}
+
+.plugin p{
+    color: #fff;
+    line-height: 50px;
+}
+
+.plugin img:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px black;
 }
 

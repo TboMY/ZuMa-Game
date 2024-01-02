@@ -1,4 +1,6 @@
 // 蛤蟆旋转的角度
+import { isStopAPI } from '../api'
+
 let rotateAngle = 0
 
 // 改变角度
@@ -16,19 +18,42 @@ export function createCtx (id) {
   const canvas = document.getElementById(id)
   const x = document.documentElement.clientWidth
   const y = document.documentElement.clientHeight
+  // const x = 1200
+  // const y = 800
   canvas.width = x
   canvas.height = y
   return canvas.getContext('2d')
 }
 
-// 圆球的类
-// export class CircleClass {
-//   index = 0
-//
-//   constructor (ctx, x, y, color) {
-//     this.x = x
-//     this.y = y
-//     this.angle = Math.PI
-//     this.color = color
-//   }
-// }
+// API节流
+export const throttleIsStopAPI = throttle(isStopAPI, 8)
+
+
+// 节流
+export function throttle(func, delay) {
+  let lastCall = 0;
+  let lastValue;
+  let timeoutId;
+
+  return function(...args) {
+    const context = this;
+    const callNow = !timeoutId;
+
+    if (callNow) {
+      lastValue = func.apply(context, args);
+      lastCall = Date.now();
+    } else {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(function() {
+      if (Date.now() - lastCall >= delay) {
+        lastValue = func.apply(context, args);
+        lastCall = Date.now();
+      }
+    }, delay - (Date.now() - lastCall));
+
+    return lastValue;
+  };
+}
+
