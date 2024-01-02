@@ -51,6 +51,13 @@ canvas {
     color: #000;
 }
 
+.clear-user-select{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .game-start {
     background-repeat: no-repeat;
     background-size: cover;
