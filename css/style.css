@@ -51,7 +51,7 @@ canvas {
     color: #000;
 }
 
-.clear-user-select{
+.clear-user-select {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -282,7 +282,7 @@ canvas {
     padding: 5px 10px;
 }
 
-.show-ranking thead tr{
+.show-ranking thead tr {
     background-color: pink;
 }
 
@@ -327,7 +327,7 @@ canvas {
 }
 
 /*  ===================== 道具 ==================*/
-.plugin{
+.plugin {
     display: none;
     position: absolute;
     top: 50%;
@@ -344,26 +344,26 @@ canvas {
     font-size: 50px;
 }
 
-.plugin img{
+.plugin img {
     width: 200px;
     height: 200px;
-    transition:0.4s linear all;
+    transition: 0.4s linear all;
     vertical-align: middle;
     border-radius: 50%;
 }
 
-.plugin span:nth-of-type(2){
+.plugin span:nth-of-type(2) {
     color: #fff;
     font-size: 100px;
     vertical-align: middle;
 }
 
-.plugin p{
+.plugin p {
     color: #fff;
     line-height: 50px;
 }
 
-.plugin img:hover{
+.plugin img:hover {
     cursor: pointer;
     transform: scale(1.1);
     box-shadow: 0 0 20px black;
