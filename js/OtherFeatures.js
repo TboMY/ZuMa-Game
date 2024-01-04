@@ -1,4 +1,10 @@
-import { getAllCountAPI, getLevelIdAPI, getPluginCountAPI, getRankingListAPI, updatePluginCountAPI } from './api'
+import {
+  getLevelIdAPI,
+  getPluginCountAPI,
+  getRankingListAPI,
+  getTotalCountAPI,
+  updatePluginCountAPI
+} from './api'
 import { setIsPause, useCommonPlugin, useMoneyPlugin } from './index.js'
 
 // 左边两个按钮绑定事件
@@ -55,7 +61,7 @@ async function showRankingList (page, totalCount, isFirst) {
     document.querySelector('.show-ranking button:nth-of-type(2)').onclick = nextPage
     document.querySelector('.show-ranking button:nth-of-type(3)').onclick = confirm
     coverDiv.style.display = 'block'
-    totalCount = (await getAllCountAPI()).data
+    totalCount = (await getTotalCountAPI()).data
   }
 
   const data = (await getRankingListAPI(page)).data

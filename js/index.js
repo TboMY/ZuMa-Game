@@ -58,10 +58,8 @@ export async function init (name) {
   const trackData = (await initTracksAPI()).data
   initLine = trackData[0]
   circleTrackArr = trackData[1]
-  // 初始化小球数组和运动速度
-  const circlesAndDtDate = (await initCircleArrAPI(name)).data
-  circleArr = circlesAndDtDate[0]
-  dt = circlesAndDtDate[1]
+  // 初始化小球数组
+  circleArr = (await initCircleArrAPI(name)).data
   // 获取蛤蟆嘴里的球
   shotCircle = (await getNewShotCircleAPI()).data
   // 绑定事件
@@ -69,7 +67,7 @@ export async function init (name) {
   // 初始化全局变量
   resetGlobalVariable(name)
   // 减速
-  setTimeout(() => dt = 0.002, dt * 20 * 1000)
+  setTimeout(() => dt = 0.002, dt * 20 * 1000 * (1 + (leveId - 1) * 0.2))
   render()
 }
 
@@ -414,6 +412,7 @@ function resetGlobalVariable (name) {
   isRollingBack = false
   rollingBackIndex = -1
   isPause = false
+  dt = 0.04
   totalLength = getCircleLength()
   speed = totalLength / totalTime
   ctx = createCtx('main-canvas')
@@ -464,7 +463,7 @@ export function useMoneyPlugin () {
 }
 
 export function useCommonPlugin () {
-  for (let i = 0; i < circleArr.length/2; i++) {
+  for (let i = 0; i < circleArr.length / 2; i++) {
     circleArr[i].color = '#ff0000'
   }
   shotCircle.color = '#ff0000'

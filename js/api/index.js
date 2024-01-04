@@ -92,8 +92,8 @@ export const getRankingListAPI = page => {
 }
 
 // 获取所有条数
-export const getAllCountAPI = () => {
-  return axios.get('http://localhost:8080/getTotalPage')
+export const getTotalCountAPI = () => {
+  return axios.get('http://localhost:8080/getTotalCount')
 }
 
 // 获取道具数量
