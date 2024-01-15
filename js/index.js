@@ -1,12 +1,6 @@
 import { createCtx, getAngle, throttleIsStopAPI } from './util/util.js'
 import {
-  getLevelIdAPI,
-  getNewShotCircleAPI,
-  hitAPI,
-  initCircleArrAPI,
-  initTracksAPI,
-  isClearAgainAPI,
-  nextLevelAPI
+  getLevelIdAPI, getNewShotCircleAPI, hitAPI, initCircleArrAPI, initTracksAPI, isClearAgainAPI, nextLevelAPI
 } from './api'
 import { handleRotateImg, bindImgRotateEvent } from './DrawBackground.js'
 import { start } from './Init.js'
@@ -78,23 +72,20 @@ function render () {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   // 判输
   if (!isGameOver && isFail) {
+    console.log('游戏结束,你输了')
     unBindEvent()
     dt = 0.05
-    console.log('游戏结束,你输了')
     isGameOver = true
     fail()
   }
   // 判赢
   if (!isGameOver && circleArr.length === 0) {
-    unBindEvent()
     console.log('游戏结束,你赢了')
-    // 清空画布
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    unBindEvent()
     isGameOver = true
     success()
     return
   }
-
   if (circleArr.length === 0) return
 
   // 没有处于发射状态的球,跟随鼠标移动
@@ -104,10 +95,7 @@ function render () {
 
   circleArr.forEach(async (circle, indexInCircleArr) => {
     // 是否有球应该回滚
-    if (!isRollingBack && indexInCircleArr !== circleArr.length - 1
-      && Math.sqrt(Math.pow(circle.x - circleArr[indexInCircleArr + 1].x, 2) +
-        Math.pow(circleArr[indexInCircleArr + 1].y - circle.y, 2)) > 200) {
-
+    if (!isRollingBack && indexInCircleArr !== circleArr.length - 1 && Math.sqrt(Math.pow(circle.x - circleArr[indexInCircleArr + 1].x, 2) + Math.pow(circleArr[indexInCircleArr + 1].y - circle.y, 2)) > 200) {
       isRollingBack = true
       rollingBackIndex = indexInCircleArr
       // 让这个球之前的球都回滚
@@ -122,7 +110,6 @@ function render () {
       isHitFlag = true
       // 发送撞击请求
       circleArr = (await hitAPI(circleArr, circle, shotCircle, indexInCircleArr)).data
-      // console.log(circleArr)
       // 获取新的蛤蟆嘴里的球
       shotCircle = (await getNewShotCircleAPI()).data
       isHitFlag = false
@@ -138,15 +125,7 @@ function render () {
   requestAnimationFrame(render)
 }
 
-// 计算所有圆弧轨道长度,
-function getCircleLength () {
-  let totalLength = 0
-  circleTrackArr.forEach(circle => {
-    totalLength += Math.PI * circle.radius
-  })
-  return totalLength
-}
-
+// 发球处理函数
 function handleShootingCircle () {
   if (!isRollingBack && !isPause) {
     shootingCircle()
@@ -195,21 +174,6 @@ function drawCircleInMouse (circle) {
   ctx.restore()
 }
 
-// 填充圆的函数,带全参数
-function drawFillCircle (ctx, x, y, radius, startAngle, endAngle, anticlockwise, color) {
-  ctx.save()
-  // 创建渐变色
-  const gradient = ctx.createRadialGradient(x - 15, y - 15, 5, x, y, radius)
-  gradient.addColorStop(0, `#ffffff80`)
-  gradient.addColorStop(0.4, `${color}90`)
-  gradient.addColorStop(1, color)
-  ctx.fillStyle = gradient
-  ctx.beginPath()
-  ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
-  ctx.fill()
-  ctx.restore()
-}
-
 // 碰撞判断
 function isHit (trackCircle, shotCircle) {
   // 先判断该轨道上的球,是否在画布之外
@@ -247,37 +211,10 @@ function updateCircleMovingOnTrack (circle) {
     if (circle.y + diffY >= initLine.y2) {
       circle.index = index + 1
     }
+    drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true, circle.color)
   } else {
-    // 在圆形轨道上
-    const { radius, x, y, loop } = circleTrackArr[index - 1]
-
-    // 应该在该段轨道运动的时间
-    const trackTime = Math.PI * radius / totalLength * totalTime
-
-    // 算出在该段时间内,每一次角度变化多少 (数学问题,令上面直线上运动距离diffY与ΔS相等,并取这边 angle=wt中的t=1)
-    const diffAngle = Math.PI * dt / trackTime
-    const diffX = radius * Math.cos(circle.angle)
-    const diffY = radius * Math.sin(circle.angle) * -1
-    circle.angle += diffAngle
-
-    // 从右到左还是从左到右
-    if (loop) {
-      // true说明:球从左到右
-      circle.x = x + diffX
-      circle.y = y + diffY
-    } else {
-      // false说明:球从右到左
-      circle.x = x - diffX
-      circle.y = y - diffY
-    }
-
-    if (circle.angle >= Math.PI * 2) {
-      circle.index = index + 1
-      circle.angle = Math.PI
-    }
+    renderOnCircleTrack(circle, true)
   }
-  // 重绘圆
-  drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true, circle.color)
 }
 
 // 回滚动画
@@ -296,8 +233,7 @@ async function updateRollbackMoving (circle, indexInCircleArr) {
 
   if (index !== 0) {
     // 缩小到一定范围才发请求
-    const flag = indexInCircleArr === rollingBackIndex && Math.sqrt(Math.pow(circleArr[rollingBackIndex].x - circleArr[rollingBackIndex + 1].x, 2) +
-      Math.pow(circleArr[rollingBackIndex].y - circleArr[rollingBackIndex + 1].y, 2)) <= 86
+    const flag = indexInCircleArr === rollingBackIndex && Math.sqrt(Math.pow(circleArr[rollingBackIndex].x - circleArr[rollingBackIndex + 1].x, 2) + Math.pow(circleArr[rollingBackIndex].y - circleArr[rollingBackIndex + 1].y, 2)) <= 86
     // 如果在圆弧轨道已经连上了
     if (flag) {
       const stop = (await throttleIsStopAPI(circleArr[rollingBackIndex], circleArr[rollingBackIndex + 1])).data
@@ -312,41 +248,15 @@ async function updateRollbackMoving (circle, indexInCircleArr) {
         circle.rollback = false
         // 能否再次清除
         circleArr = (await isClearAgainAPI(circleArr, rollingBackIndex)).data
+        // return
       }
-      rollbackRenderOnTrack()
+      renderOnCircleTrack(circle)
     }
     if (!flag) {
-      queueMicrotask(rollbackRenderOnTrack)
+      queueMicrotask(()=>renderOnCircleTrack(circle))
     }
   } else {
-    rollbackRenderOnLine()
-  }
-
-  function rollbackRenderOnTrack () {
-    // 在圆形轨道上
-    const { radius, x, y, loop } = circleTrackArr[index - 1]
-
-    const trackTime = Math.PI * radius / totalLength * totalTime
-    const diffAngle = Math.PI * 0.01 / trackTime
-    const diffX = radius * Math.cos(circle.angle)
-    const diffY = radius * Math.sin(circle.angle) * -1
-    circle.angle -= diffAngle
-
-    if (loop) {
-      circle.x = x + diffX
-      circle.y = y + diffY
-    } else {
-      circle.x = x - diffX
-      circle.y = y - diffY
-    }
-
-    if (circle.angle - diffAngle <= Math.PI) {
-      // 如果是退入直线,不能设置为2π,否则之后前进时会出问题
-      circle.angle = index === 1 ? Math.PI : Math.PI * 2
-      circle.index = index - 1
-    }
-    // 重绘圆
-    drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true, circle.color)
+    await rollbackRenderOnLine()
   }
 
   async function rollbackRenderOnLine () {
@@ -369,15 +279,54 @@ async function updateRollbackMoving (circle, indexInCircleArr) {
       // 每次增加的距离
       const diffY = speed * 0.01
       circle.y = circle.y - diffY
-
       if (circle.y <= 0) {
-        // isRollingBack = false
         return
       }
       // 重绘圆
       drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true, circle.color)
     }
   }
+}
+
+
+function renderOnCircleTrack (circle, flag) {
+  // 在圆形轨道上
+  const { radius, x, y, loop } = circleTrackArr[circle.index - 1]
+
+  // 应该在该段轨道运动的时间
+  const trackTime = Math.PI * radius / totalLength * totalTime
+
+  // 算出在该段时间内,每一次角度变化多少 (数学问题,令上面直线上运动距离diffY与ΔS相等,并取这边 angle=wt中的t=1)
+  const diffAngle = flag ? Math.PI * dt / trackTime : Math.PI * 0.01 / trackTime
+  const diffX = radius * Math.cos(circle.angle)
+  const diffY = radius * Math.sin(circle.angle) * -1
+  circle.angle = flag ? circle.angle + diffAngle : circle.angle - diffAngle
+
+  // 从右到左还是从左到右
+  if (loop) {
+    // true说明:球从左到右
+    circle.x = x + diffX
+    circle.y = y + diffY
+  } else {
+    // false说明:球从右到左
+    circle.x = x - diffX
+    circle.y = y - diffY
+  }
+
+  if (flag) {
+    if (circle.angle >= Math.PI * 2) {
+      circle.index = circle.index + 1
+      circle.angle = Math.PI
+    }
+  } else {
+    if (circle.angle - diffAngle <= Math.PI) {
+      // 如果进入直线轨道,不能设置为2π,否则前进渲染会出问题
+      circle.angle = circle.index === 1 ? Math.PI : Math.PI * 2
+      circle.index = circle.index - 1
+    }
+  }
+// 重绘圆
+  drawFillCircle(ctx, circle.x, circle.y, 40, 0, Math.PI * 2, true, circle.color)
 }
 
 function showGameOverUI (className, loop) {
@@ -425,8 +374,7 @@ function success () {
   setTimeout(() => {
     showGameOverUI('.success', true)
   }, 500)
-  document.querySelector('.success .score').innerText = `${Math.floor(1 / ((endTime - startTime) / 1000)
-    * initLength * 300)}`
+  document.querySelector('.success .score').innerText = `${Math.floor(1 / ((endTime - startTime) / 1000) * initLength * 300)}`
   document.querySelector('.success button').onclick = async function () {
     showGameOverUI('.success', false)
     await nextLevelAPI(userName)
@@ -440,12 +388,35 @@ function fail () {
   }, 500)
   const lastCircleArrLength = circleArr.length + 1 >= initLength ? initLength : circleArr.length + 1
   console.log((endTime - startTime) / 1000, (initLength - circleArr.length) * 300)
-  document.querySelector('.fail .score').innerText = `${Math.floor(1 / ((endTime - startTime) / 1000)
-    * (initLength - lastCircleArrLength) * 300)}`
+  document.querySelector('.fail .score').innerText = `${Math.floor(1 / ((endTime - startTime) / 1000) * (initLength - lastCircleArrLength) * 300)}`
   document.querySelector('.fail button').onclick = async function () {
     showGameOverUI('.fail', false)
     await start(userName)
   }
+}
+
+// 计算所有圆弧轨道长度,
+function getCircleLength () {
+  let totalLength = 0
+  circleTrackArr.forEach(circle => {
+    totalLength += Math.PI * circle.radius
+  })
+  return totalLength
+}
+
+// 填充圆的函数,带全参数
+function drawFillCircle (ctx, x, y, radius, startAngle, endAngle, anticlockwise, color) {
+  ctx.save()
+  // 创建渐变色
+  const gradient = ctx.createRadialGradient(x - 15, y - 15, 5, x, y, radius)
+  gradient.addColorStop(0, `#ffffff80`)
+  gradient.addColorStop(0.4, `${color}90`)
+  gradient.addColorStop(1, color)
+  ctx.fillStyle = gradient
+  ctx.beginPath()
+  ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
+  ctx.fill()
+  ctx.restore()
 }
 
 export function setIsPause (flag) {
@@ -468,4 +439,3 @@ export function useCommonPlugin () {
   }
   shotCircle.color = '#ff0000'
 }
-

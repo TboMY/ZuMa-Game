@@ -97,7 +97,6 @@ export const getTotalCountAPI = () => {
 }
 
 // 获取道具数量
-// 'getPluginCount'
 export const getPluginCountAPI = name => {
   return axios.get('http://localhost:8080/getPluginCount', {
     params: {
