@@ -237,7 +237,6 @@ async function updateRollbackMoving (circle, indexInCircleArr) {
     // 如果在圆弧轨道已经连上了
     if (flag) {
       const stop = (await throttleIsStopAPI(circleArr[rollingBackIndex], circleArr[rollingBackIndex + 1])).data
-      console.log('请求')
       if (stop) {
         circleArr.forEach((circle, i) => {
           if (i < rollingBackIndex) {
@@ -248,7 +247,7 @@ async function updateRollbackMoving (circle, indexInCircleArr) {
         circle.rollback = false
         // 能否再次清除
         circleArr = (await isClearAgainAPI(circleArr, rollingBackIndex)).data
-        // return
+        return
       }
       renderOnCircleTrack(circle)
     }
